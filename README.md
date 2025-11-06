@@ -8,7 +8,7 @@ This file automates the installation and configuration of Windows 11 Pro. Applyi
 - **Language**: German (Germany), fallback to English (US)
 - **Keyboard Layout**: German
 - **Computer Name**: `Tatze-PC`
-- **User Account**: `Tatze` (Administrator)
+- **Local User Account**: `Tatze` (Administrator)
 
 ## Setup Phases and Actions
 
