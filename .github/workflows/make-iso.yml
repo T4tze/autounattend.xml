@@ -1,0 +1,38 @@
+name: Inject autounattend.xml into Windows ISO
+
+on:
+  workflow_dispatch:
+
+jobs:
+  inject-autounattend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install genisoimage
+        run: sudo apt-get update && sudo apt-get install -y genisoimage
+
+      - name: Extract ISO contents
+        run: |
+          mkdir winiso
+          7z x win11.iso -owiniso
+
+      - name: Add autounattend.xml
+        run: |
+          cp autounattend.xml winiso/
+
+      - name: Rebuild ISO
+        run: |
+          genisoimage \
+            -iso-level 4 \
+            -udf \
+            -b boot/etfsboot.com \
+            -no-emul-boot \
+            -boot-load-size 8 \
+            -eltorito-alt-boot \
+            -eltorito-platform efi \
+            -b efi/microsoft/boot/efisys.bin \
+            -no-emul-boot \
+            -o win11-custom.iso \
+            winiso
