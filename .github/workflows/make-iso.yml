@@ -1,24 +1,27 @@
-name: Inject autounattend.xml into Windows ISO
+name: Customize Windows 11 ISO with autounattend.xml
 
 on:
   workflow_dispatch:
 
 jobs:
-  inject-autounattend:
+  build-custom-iso:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install genisoimage
-        run: sudo apt-get update && sudo apt-get install -y genisoimage
+      - name: Install required tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y p7zip-full genisoimage
 
-      - name: Extract ISO contents
+      - name: Extract original ISO
         run: |
           mkdir winiso
           7z x win11.iso -owiniso
 
-      - name: Add autounattend.xml
+      - name: Add autounattend.xml to ISO root
         run: |
           cp autounattend.xml winiso/
 
@@ -36,3 +39,9 @@ jobs:
             -no-emul-boot \
             -o win11-custom.iso \
             winiso
+
+      - name: Upload custom ISO
+        uses: actions/upload-artifact@v3
+        with:
+          name: win11-custom
+          path: win11-custom.iso
